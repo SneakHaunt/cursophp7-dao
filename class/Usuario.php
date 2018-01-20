@@ -59,14 +59,15 @@ private $dtcadastro;
 		*/
 
 		if (count($results) > 0){//ou if(isset($results[0])
-
+			/*
 			$row = $results[0];
-
 			$this->setIdusuario($row['idusuario']);
 			$this->setDeslogin($row['deslogin']);
 			$this->setDessenha($row['dessenha']);
 			$this->setDtcadastro(new DateTime($row['dtcadastro']));
-	
+			*/
+
+			$this->setData($results[0]);
 		}
 	}
 
@@ -112,18 +113,65 @@ private $dtcadastro;
 		*/
 
 		if (count($results) > 0){//ou if(isset($results[0])
-
+			/*
 			$row = $results[0];
-
 			$this->setIdusuario($row['idusuario']);
 			$this->setDeslogin($row['deslogin']);
 			$this->setDessenha($row['dessenha']);
 			$this->setDtcadastro(new DateTime($row['dtcadastro']));
-	
+			*/
+			$this->setData($results[0]);
+			
 		}else{
 			throw new Exception("Login e/ou senha inválidos.");
 		}
+	}
+
+	public function setData($data){
+			$this->setIdusuario($data['idusuario']);
+			$this->setDeslogin($data['deslogin']);
+			$this->setDessenha($data['dessenha']);
+			$this->setDtcadastro(new DateTime($data['dtcadastro']));
+	}
+
+	/*
+	 Deve-se atribuir vazio como padrão, pois, isso evita a obrigação de inserir parametros 
+	 ao instanciar a classse
+	*/
+	public function __construct($login="", $password=""){
+		$this->setDeslogin($login);
+		$this->setDessenha($password);
+	}
+
+	public function insert(){
+		$sql = new Sql();
+		/*
+			Usa-se o método select, pois, quando a procedure executar por último ela vai chamar uma 
+			função do banco de dados que nos retorna qual foi ID gerado na tabela.
+			No Mysql usa-se CALL para chamar e no SQLSERVER usa-se execute.
+		*/
+		$results = $sql->select("CALL sp_usuarios_insert(:LOGIN, :PASSWORD)", array(
+			":LOGIN"=>$this->getDeslogin(),
+			":PASSWORD"=>$this->getDessenha()
+		));
+
+		if(count($results)>0){
+			$this->setData($results[0]);
+		}
 	} 
+
+
+	public function update($login, $password){
+		$this->setDeslogin($login);
+		$this->setDessenha($password);
+		$sql = new Sql();
+
+		$sql->query("UPDATE tb_usuarios SET deslogin = :LOGIN, dessenha = :PASSWORD WHERE idusuario = :ID",
+			array(":LOGIN"=>$this->getDeslogin(),
+				  ":PASSWORD"=>$this->getDesSenha(),
+				  ":ID"=>$this->getIdusuario()
+		));
+	}
 
 
 }
