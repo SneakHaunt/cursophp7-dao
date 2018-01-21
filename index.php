@@ -36,15 +36,23 @@ require_once("config.php");
 //$aluno->insert();
 //echo $aluno;
 
-$usuario = new Usuario();
+
+//Alrerar um usuário
+//$usuario = new Usuario();
 //Usa-se loadById com o ID que sofrerá a alteração.
-$usuario->loadById(8);
+//$usuario->loadById(8);
 /*
 Precisa do loadById antes, porque, ele carrega o ID dentre outros dados do banco e passa para o objeto, 
 em seguida, o método update irá atraves do getter obter o ID que deve ser alterado.
 */
-$usuario->update("professor","456"); 
+//$usuario->update("professor","456"); 
+//echo $usuario;
 
+
+$usuario = new Usuario();
+$usuario->loadById(55);
+$usuario->delete();
 echo $usuario;
+
 
 ?>

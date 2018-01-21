@@ -5,8 +5,6 @@ class Usuario{
 Métodos que não contém $this optar por deixa-los estáticos, pois, estes não estão tão "amarrados" com a classe.
 */
 
-
-
 private $idusuario;
 private $deslogin;
 private $dessenha;
@@ -70,6 +68,22 @@ private $dtcadastro;
 			$this->setData($results[0]);
 		}
 	}
+
+
+	public function delete(){
+		$sql = new Sql();
+		$sql->query("DELETE from tb_usuarios WHERE idusuario = :ID", array(
+			":ID"=>$this->getIdusuario()));
+		/* 
+		Zera/Esvazia o objeto 
+		*/
+		$this->setIdusuario(0);
+		$this->setDeslogin("");
+		$this->setDessenha("");
+		$this->setDtcadastro(new DateTime()); //Poderia ser null.
+
+	}
+
 
 	public function __toString(){
 
